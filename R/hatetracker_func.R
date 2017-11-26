@@ -70,13 +70,13 @@ get_hatetracker_images <- function(start_date = Sys.Date(), end_date = Sys.Date(
 #' @importFrom jsonlite fromJSON
 #' @importFrom magrittr '%>%'
 #' @importFrom tibble as_data_frame
-#' @param topic Topics hash tag.
+#' @param topic Topic hashtag.
 #' @param start_date Beginning of date range. Defaults to three weeks from the current date.
 #' @param end_date End of date range. Defaults to the current date.
 #' @export
 get_hatetracker_mentions <- function(topic = NULL, start_date = Sys.Date() - 21, end_date = Sys.Date()) {
   httr::GET(paste("https://api.hatetracker.io/v1/mentions", topic, start_date, end_date, sep = "/")) %>%
-              httr::content(as = "text") %>%
-              jsonlite::fromJSON(flatten = TRUE) %>%
-              tibble::as_data_frame()
+    httr::content(as = "text") %>%
+    jsonlite::fromJSON(flatten = TRUE) %>%
+    tibble::as_data_frame()
 }
