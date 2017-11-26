@@ -1,7 +1,6 @@
 ---
 output:
-  md_document:
-    variant: markdown_github
+  github_document: default
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -15,11 +14,15 @@ knitr::opts_chunk$set(
 ```
 
 [![Travis-CI Build Status](https://travis-ci.org/davidski/hatetracker.svg?branch=master)](https://travis-ci.org/davidski/hatetracker)
- * Turn on travis for your repo at https://travis-ci.org/davidski/hatetracker
  
 This is an R interface to the SPLC hatetracker.io project.
 
 The data goes back to August 2016.
+
+## Installation
+
+`devtools::install_github("davidski/hatetracker")`
+
 
 ## Thanks
 
@@ -31,7 +34,9 @@ carries out.
 ## basic example code
 library(hatetracker)
 library(tidyverse)
-get_hatetracker_activity("2017-11-25")#
+library(extrafont)
+dat <- get_hatetracker_activity("2017-11-25")
+dat
 ```
 ```{r}
 dat %>% mutate(title = forcats::as_factor(title)) %>% 
