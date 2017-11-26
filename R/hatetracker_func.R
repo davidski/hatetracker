@@ -18,15 +18,26 @@ get_hatetracker_activity <- function(start_date = Sys.Date()) {
 #' @importFrom jsonlite fromJSON
 #' @importFrom magrittr '%>%'
 #' @importFrom tibble as_data_frame
+#' @importFrom purrr map
+#' @importFrom purrr set_names
+#' @importFrom dplyr mutate
 #' @param start_date Beginning of date range.
 #' @param end_date End of date range.
 #' @export
 get_hatetracker_activity2 <- function(start_date = Sys.Date(), end_date = NULL) {
   if (is.null(end_date)) end_date <- start_date
-  httr::GET(paste("https://api.hatetracker.io/v1/activity/day", start_date, end_date, sep = "/")) %>%
+  dat <- httr::GET(paste("https://api.hatetracker.io/v1/activity/day", start_date, end_date, sep = "/")) %>%
     httr::content(as = "text") %>% jsonlite::fromJSON(flatten = TRUE) %>%
     tibble::as_data_frame()
+
+  # convert timeline from a nested matrix to nested tibble
+  dat$timeline <- purrr::map(dat$timeline, ~ { as_data_frame(.x) %>%
+      purrr::set_names(c("date", "z_score")) %>%
+      dplyr::mutate(date = as.POSIXct((date / 1000), origin = "1970-01-01"))})
+
+  dat
 }
+
 #' Fetch images associated with current trending hate tags.
 #'
 #' @importFrom httr GET
