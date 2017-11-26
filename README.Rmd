@@ -1,0 +1,47 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+[![Travis-CI Build Status](https://travis-ci.org/davidski/hatetracker.svg?branch=master)](https://travis-ci.org/davidski/hatetracker)
+ * Turn on travis for your repo at https://travis-ci.org/davidski/hatetracker
+ 
+This is an R interface to the SPLC hatetracker.io project.
+
+The data goes back to August 2016.
+
+## Thanks
+
+This is an unofficial interface to the hatetracker API. Please be kind to 
+the API and consdier donating to the critically important work the SPLC 
+carries out.
+
+```{r example}
+## basic example code
+library(hatetracker)
+library(tidyverse)
+get_hatetracker_activity("2017-11-25")#
+```
+```{r}
+dat %>% mutate(title = forcats::as_factor(title)) %>% 
+  tidyr::unnest() %>% mutate(datetime = as.POSIXct(name, tz = "utc")) %>% 
+  ggplot(., aes(x = datetime, y = y)) + geom_col() + 
+  #facet_wrap(~title, ncol = 1, strip.position = "left") +
+  facet_wrap(~title) +
+  hrbrthemes::theme_ipsum(grid = "", axis = "x")
+```
+
+## Code of Conduct
+
+Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
