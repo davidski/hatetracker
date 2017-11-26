@@ -1,3 +1,6 @@
+Hatetracker
+================
+David F. Severski
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Travis-CI Build Status](https://travis-ci.org/davidski/hatetracker.svg?branch=master)](https://travis-ci.org/davidski/hatetracker)
@@ -9,59 +12,112 @@ The data goes back to August 2016.
 Installation
 ------------
 
+Hatetracker is not on CRAN. Installation from GitHub is simplest via the `devtools` package:
+
 `devtools::install_github("davidski/hatetracker")`
 
 Thanks
 ------
 
-This is an unofficial interface to the hatetracker API. Please be kind to the API and consdier donating to the critically important work the SPLC carries out.
+This is an unofficial interface to the hatetracker API. Please be kind to the API and consider making a tax-deductible [donation](https://donate.splcenter.org/sslpage.aspx?pid=463) to the critically important work the SPLC carries out.
+
+Usage
+-----
+
+Load the `hatetracker` library and some supporting tooling.
 
 ``` r
-## basic example code
 library(hatetracker)
 library(tidyverse)
-#> -- Attaching packages --------------------------------------------------------------------------------- tidyverse 1.2.1 --
-#> v ggplot2 2.2.1.9000     v purrr   0.2.4     
-#> v tibble  1.3.4          v dplyr   0.7.4     
-#> v tidyr   0.7.2          v stringr 1.2.0     
-#> v readr   1.1.1          v forcats 0.2.0
-#> -- Conflicts ------------------------------------------------------------------------------------ tidyverse_conflicts() --
-#> x dplyr::filter() masks stats::filter()
-#> x dplyr::lag()    masks stats::lag()
 library(extrafont)
-#> Registering fonts with R
-dat <- get_hatetracker_activity("2017-11-25")
+```
+
+Fetch the trending hashtags used in the alt-right community for a specific day. The data is returned as a nested dataframe for each trending tag, including the total number of times mentioned. The nested timeframe includes a z-score normalized trend for the number of mentions at 30 minute intervals throughout the requested date range.
+
+``` r
+charlottesville <- as.Date("2017-08-13")
+dat <- get_hatetracker_activity(charlottesville + 1)
 dat
 #> # A tibble: 12 x 3
-#>             title total              timeline
-#>  *          <chr> <dbl>                <list>
-#>  1              2  22.3 <data.frame [48 x 2]>
-#>  2           tcot  20.4 <data.frame [48 x 2]>
-#>  3    blackfriday  12.6 <data.frame [48 x 2]>
-#>  4   defendeurope  12.0 <data.frame [48 x 2]>
-#>  5   europeisours   9.3 <data.frame [48 x 2]>
-#>  6   christianity   9.0 <data.frame [48 x 2]>
-#>  7      stopislam   8.2 <data.frame [48 x 2]>
-#>  8          qanon   7.8 <data.frame [48 x 2]>
-#>  9        bitcoin   7.3 <data.frame [48 x 2]>
-#> 10     blockchain   7.3 <data.frame [48 x 2]>
-#> 11 unsealthedeals   6.3 <data.frame [48 x 2]>
-#> 12         sweden   6.2 <data.frame [48 x 2]>
+#>               title total              timeline
+#>  *            <chr> <dbl>                <list>
+#>  1  charlottesville  92.7 <data.frame [48 x 2]>
+#>  2           durham  28.0 <data.frame [48 x 2]>
+#>  3     firemcmaster  23.7 <data.frame [48 x 2]>
+#>  4             maga  22.3 <data.frame [48 x 2]>
+#>  5 charolettesville  20.5 <data.frame [48 x 2]>
+#>  6    unitetheright  19.3 <data.frame [48 x 2]>
+#>  7          seattle  15.7 <data.frame [48 x 2]>
+#>  8     defendeurope  15.0 <data.frame [48 x 2]>
+#>  9      thisisnotus  12.0 <data.frame [48 x 2]>
+#> 10             tcot  11.6 <data.frame [48 x 2]>
+#> 11        exmuslims  11.3 <data.frame [48 x 2]>
+#> 12         breaking   9.9 <data.frame [48 x 2]>
 ```
+
+Basic plotting of the activity.
 
 ``` r
 dat %>% mutate(title = forcats::as_factor(title)) %>% 
   tidyr::unnest() %>% mutate(datetime = as.POSIXct(name, tz = "utc")) %>% 
-  ggplot(., aes(x = datetime, y = y)) + geom_col() + 
+  ggplot(., aes(x = datetime, y = y)) + geom_col(fill = "orange") + 
+  geom_hline(yintercept = 0) +
   #facet_wrap(~title, ncol = 1, strip.position = "left") +
-  facet_wrap(~title) +
-  hrbrthemes::theme_ipsum(grid = "", axis = "x")
-#> Warning: Removed 445 rows containing missing values (position_stack).
+  facet_grid(title ~ .) +
+  hrbrthemes::theme_ipsum(grid = "") + 
+  theme(strip.text.y = element_text(size = 12, angle = 0, hjust = 0)) +
+  labs(title = "Top Hashtags Used by Alt-Right Twitter Accounts", 
+       subtitle = "Day after the Charlottesville attack",
+       caption = "Source: hatetracker.io",
+       y = "Z-Score", x = NULL)
+#> Warning: Removed 319 rows containing missing values (position_stack).
 ```
 
-![](README-unnamed-chunk-2-1.png)
+![](README-basic_plot-1.png)
+
+We can also look at historical mentions of specific tags. In this case, the `#charlottesville` tag.
+
+``` r
+historical <- get_hatetracker_activity2(charlottesville  - 7, charlottesville + 7)
+char_hashtag <- historical[[1, "timeline"]] %>% as_data_frame() %>% 
+  set_names(c("date", "z_score")) %>% 
+  mutate(date = anytime::anytime(date / 1000))
+char_hashtag
+#> # A tibble: 10 x 2
+#>                   date z_score
+#>                 <dttm>   <dbl>
+#>  1 2017-08-08 21:00:00   -0.18
+#>  2 2017-08-09 21:00:00    6.68
+#>  3 2017-08-10 21:00:00    1.74
+#>  4 2017-08-11 21:00:00   14.10
+#>  5 2017-08-12 21:00:00   21.50
+#>  6 2017-08-13 21:00:00   16.80
+#>  7 2017-08-14 21:00:00   10.48
+#>  8 2017-08-17 21:00:00    1.92
+#>  9 2017-08-18 21:00:00    0.95
+#> 10 2017-08-19 21:00:00    1.87
+```
+
+``` r
+char_hashtag$attack <- as.Date(char_hashtag$date) == charlottesville
+ggplot(char_hashtag, aes(date, z_score)) + 
+  geom_col(aes(fill = attack)) +
+  scale_fill_manual(values = c("orange", "red"), guide = FALSE) + 
+  labs(x = NULL, y = "Z-Score", 
+       title = "Use of Charlottesville Hashtag by Alt-Right Twitter Users", 
+       subtitle = "Week preeceding and following the Chartlottsville attack",
+       caption = "Source: hatetracker.io") +
+  hrbrthemes::theme_ipsum(grid = "")
+```
+
+![](README-unnamed-chunk-3-1.png)
 
 Code of Conduct
 ---------------
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+License
+-------
+
+The [MIT License](LICENSE) applies.

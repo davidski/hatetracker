@@ -1,4 +1,6 @@
 ---
+title: Hatetracker
+author: David F. Severski
 output:
   github_document: default
 ---
@@ -21,32 +23,82 @@ The data goes back to August 2016.
 
 ## Installation
 
+Hatetracker is not on CRAN. Installation from GitHub is simplest via the 
+`devtools` package:
+
 `devtools::install_github("davidski/hatetracker")`
 
 
 ## Thanks
 
 This is an unofficial interface to the hatetracker API. Please be kind to 
-the API and consdier donating to the critically important work the SPLC 
-carries out.
+the API and consider making a tax-deductible [donation](https://donate.splcenter.org/sslpage.aspx?pid=463) to the critically important work the SPLC carries out.
 
-```{r example}
-## basic example code
+## Usage
+
+Load the `hatetracker` library and some supporting tooling.
+
+```{r load_libraries, message=FALSE, warning=FALSE}
 library(hatetracker)
 library(tidyverse)
 library(extrafont)
-dat <- get_hatetracker_activity("2017-11-25")
+```
+
+Fetch the trending hashtags used in the alt-right community for a specific 
+day. The data is returned as a nested dataframe for each trending tag, 
+including the total number of times mentioned. The nested timeframe includes 
+a z-score normalized trend for the number of mentions at 30 minute intervals 
+throughout the requested date range.
+
+```{r fetch_trends}
+charlottesville <- as.Date("2017-08-13")
+dat <- get_hatetracker_activity(charlottesville + 1)
 dat
 ```
-```{r}
+
+Basic plotting of the activity.
+
+```{r basic_plot, fig.height=12, fig.width= 10}
 dat %>% mutate(title = forcats::as_factor(title)) %>% 
   tidyr::unnest() %>% mutate(datetime = as.POSIXct(name, tz = "utc")) %>% 
-  ggplot(., aes(x = datetime, y = y)) + geom_col() + 
+  ggplot(., aes(x = datetime, y = y)) + geom_col(fill = "orange") + 
+  geom_hline(yintercept = 0) +
   #facet_wrap(~title, ncol = 1, strip.position = "left") +
-  facet_wrap(~title) +
-  hrbrthemes::theme_ipsum(grid = "", axis = "x")
+  facet_grid(title ~ .) +
+  hrbrthemes::theme_ipsum(grid = "") + 
+  theme(strip.text.y = element_text(size = 12, angle = 0, hjust = 0)) +
+  labs(title = "Top Hashtags Used by Alt-Right Twitter Accounts", 
+       subtitle = "Day after the Charlottesville attack",
+       caption = "Source: hatetracker.io",
+       y = "Z-Score", x = NULL)
+```
+
+We can also look at historical mentions of specific tags. In this case, the 
+`#charlottesville` tag.
+```{r}
+historical <- get_hatetracker_activity2(charlottesville  - 7, charlottesville + 7)
+char_hashtag <- historical[[1, "timeline"]] %>% as_data_frame() %>% 
+  set_names(c("date", "z_score")) %>% 
+  mutate(date = anytime::anytime(date / 1000))
+char_hashtag
+```
+
+```{r}
+char_hashtag$attack <- as.Date(char_hashtag$date) == charlottesville
+ggplot(char_hashtag, aes(date, z_score)) + 
+  geom_col(aes(fill = attack)) +
+  scale_fill_manual(values = c("orange", "red"), guide = FALSE) + 
+  labs(x = NULL, y = "Z-Score", 
+       title = "Use of Charlottesville Hashtag by Alt-Right Twitter Users", 
+       subtitle = "Week preeceding and following the Chartlottsville attack",
+       caption = "Source: hatetracker.io") +
+  hrbrthemes::theme_ipsum(grid = "")
 ```
 
 ## Code of Conduct
 
 Please note that this project is released with a [Contributor Code of Conduct](CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+## License
+
+The [MIT License](LICENSE) applies.

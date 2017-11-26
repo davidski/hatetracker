@@ -2,15 +2,13 @@
 % Please edit documentation in R/hatetracker_func.R
 \name{get_hatetracker_activity}
 \alias{get_hatetracker_activity}
-\title{Fetch current trends}
+\title{Fetch trends with 30-minute resolution on a specific day.}
 \usage{
-get_hatetracker_activity(start_date = Sys.Date(), end_date = NULL)
+get_hatetracker_activity(start_date = Sys.Date())
 }
 \arguments{
 \item{start_date}{Beginning of date range.}
-
-\item{end_date}{End of date range.}
 }
 \description{
-Fetch current trends
+Fetch trends with 30-minute resolution on a specific day.
 }
