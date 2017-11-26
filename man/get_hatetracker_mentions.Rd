@@ -8,7 +8,7 @@ get_hatetracker_mentions(topic = NULL, start_date = Sys.Date() - 21,
   end_date = Sys.Date())
 }
 \arguments{
-\item{topic}{Topics hash tag.}
+\item{topic}{Topic hashtag.}
 
 \item{start_date}{Beginning of date range. Defaults to three weeks from the current date.}
 
