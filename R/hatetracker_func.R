@@ -46,10 +46,17 @@ get_hatetracker_activity2 <- function(start_date = Sys.Date(), end_date = NULL) 
 #' @importFrom tibble as_data_frame
 #' @param start_date Beginning of date range. Defaults to the current date.
 #' @param end_date End of date range. Defaults to the current date.
+#' @param hashtag Optional hashtag to limit search results.
 #' @return A dataframe containing the url to the embedded media and the number of times it was referenced in the trending tags.
 #' @export
-get_hatetracker_images <- function(start_date = Sys.Date(), end_date = Sys.Date()) {
-  httr::GET(paste0("https://api.hatetracker.io/v1/images/", start_date, "/", end_date)) %>%
+get_hatetracker_images <- function(start_date = Sys.Date(), end_date = Sys.Date(), hashtag = NULL) {
+
+  # construct url
+  url <- "https://api.hatetracker.io/v1/images/"
+  if (!is.null(hashtag)) url = paste(url, "hashtag", hashtag, sep = "/")
+  url <- paste(url, start_date, end_date, sep = "/")
+
+  httr::GET(url) %>%
     httr::content(as = "text") %>% jsonlite::fromJSON(flatten = TRUE) %>%
     tibble::as_data_frame()
 }
