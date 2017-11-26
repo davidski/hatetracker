@@ -1,11 +1,10 @@
 Hatetracker
 ================
-David F. Severski
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/davidski/hatetracker.svg?branch=master)](https://travis-ci.org/davidski/hatetracker) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/davidski/hatetracker?branch=master&svg=true)](https://ci.appveyor.com/project/davidski/hatetracker)
+[![Travis-CI Build Status](https://travis-ci.org/davidski/hatetracker.svg?branch=master)](https://travis-ci.org/davidski/hatetracker) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/davidski/hatetracker?branch=master&svg=true)](https://ci.appveyor.com/project/davidski/hatetracker) [![Coverage Status](https://img.shields.io/codecov/c/github/davidski/hatetracker/master.svg)](https://codecov.io/github/davidski/hatetracker?branch=master)
 
-This is an R interface to the SPLC hatetracker.io project.
+This is an R interface to the SPLC [hatetracker.io](https://hatetracker.io) project.
 
 The data goes back to August 2016.
 

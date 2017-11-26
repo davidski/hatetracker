@@ -10,3 +10,6 @@ matrix:
       osx_image: xcode9.1
     - os: linux
       dist: trusty
+
+after_success:
+  - Rscript -e 'covr::codecov()'
