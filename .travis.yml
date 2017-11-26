@@ -3,3 +3,10 @@
 language: R
 sudo: false
 cache: packages
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode9.1
+    - os: linux
+      dist: trusty
