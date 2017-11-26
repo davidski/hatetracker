@@ -3,7 +3,7 @@ Hatetracker
 David F. Severski
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/davidski/hatetracker.svg?branch=master)](https://travis-ci.org/davidski/hatetracker)
+[![Travis-CI Build Status](https://travis-ci.org/davidski/hatetracker.svg?branch=master)](https://travis-ci.org/davidski/hatetracker) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/davidski/hatetracker?branch=master&svg=true)](https://ci.appveyor.com/project/davidski/hatetracker)
 
 This is an R interface to the SPLC hatetracker.io project.
 
@@ -19,7 +19,8 @@ Hatetracker is not on CRAN. Installation from GitHub is simplest via the `devtoo
 Thanks
 ------
 
-This is an unofficial interface to the hatetracker API. Please be kind to the API and consider making a tax-deductible [donation](https://donate.splcenter.org/sslpage.aspx?pid=463) to the critically important work the SPLC carries out.
+-   This is an unofficial interface to the hatetracker API. Please be kind to the API and consider making a tax-deductible [donation](https://donate.splcenter.org/sslpage.aspx?pid=463) to the critically important work the SPLC carries out.
+-   Cheers to @hrbrmstr for his countless packages. Darksky and friends were the motivators my creating this interface with a valuable web service.
 
 Usage
 -----
@@ -79,9 +80,7 @@ We can also look at historical mentions of specific tags. In this case, the `#ch
 
 ``` r
 historical <- get_hatetracker_activity2(charlottesville  - 7, charlottesville + 7)
-char_hashtag <- historical[[1, "timeline"]] %>% as_data_frame() %>% 
-  set_names(c("date", "z_score")) %>% 
-  mutate(date = anytime::anytime(date / 1000))
+char_hashtag <- historical[[1, "timeline"]]
 char_hashtag
 #> # A tibble: 10 x 2
 #>                   date z_score
