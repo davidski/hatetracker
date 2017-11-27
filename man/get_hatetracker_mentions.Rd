@@ -4,11 +4,11 @@
 \alias{get_hatetracker_mentions}
 \title{Fetch the top Twitter handles mentioned in certain topic over a given timeframe.}
 \usage{
-get_hatetracker_mentions(topic = NULL, start_date = Sys.Date() - 21,
+get_hatetracker_mentions(hashtag = NULL, start_date = Sys.Date() - 21,
   end_date = Sys.Date())
 }
 \arguments{
-\item{topic}{Topic hashtag.}
+\item{hashtag}{Topic hashtag.}
 
 \item{start_date}{Beginning of date range. Defaults to three weeks from the current date.}
 

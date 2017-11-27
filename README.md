@@ -32,7 +32,7 @@ library(tidyverse)
 library(extrafont)
 ```
 
-Fetch the trending hashtags used in the alt-right community for a specific day. The data is returned as a nested dataframe for each trending tag, including the total number of times mentioned. The nested timeframe includes a z-score normalized trend for the number of mentions at 30 minute intervals throughout the requested date range.
+Fetch the trending hashtags used in the alt-right community for a specific day. The data is returned as a nested dataframe for each trending tag, including the total number of times menti. The nested time frame includes a z-score normalized trend for the number of mentions at 30 minute intervals throughout the requested date range.
 
 ``` r
 charlottesville <- as.Date("2017-08-13")
@@ -59,8 +59,8 @@ Basic plotting of the activity.
 
 ``` r
 dat %>% mutate(title = forcats::as_factor(title)) %>% 
-  tidyr::unnest() %>% mutate(datetime = as.POSIXct(name, tz = "utc")) %>% 
-  ggplot(., aes(x = datetime, y = y)) + geom_col(fill = "orange") + 
+  tidyr::unnest() %>% 
+  ggplot(., aes(x = date, y = z_score)) + geom_col(fill = "orange") + 
   geom_hline(yintercept = 0) +
   #facet_wrap(~title, ncol = 1, strip.position = "left") +
   facet_grid(title ~ .) +
@@ -84,16 +84,16 @@ char_hashtag
 #> # A tibble: 10 x 2
 #>                   date z_score
 #>                 <dttm>   <dbl>
-#>  1 2017-08-08 21:00:00   -0.18
-#>  2 2017-08-09 21:00:00    6.68
-#>  3 2017-08-10 21:00:00    1.74
-#>  4 2017-08-11 21:00:00   14.10
-#>  5 2017-08-12 21:00:00   21.50
-#>  6 2017-08-13 21:00:00   16.80
-#>  7 2017-08-14 21:00:00   10.48
-#>  8 2017-08-17 21:00:00    1.92
-#>  9 2017-08-18 21:00:00    0.95
-#> 10 2017-08-19 21:00:00    1.87
+#>  1 2017-08-09 04:00:00   -0.18
+#>  2 2017-08-10 04:00:00    6.68
+#>  3 2017-08-11 04:00:00    1.74
+#>  4 2017-08-12 04:00:00   14.10
+#>  5 2017-08-13 04:00:00   21.50
+#>  6 2017-08-14 04:00:00   16.80
+#>  7 2017-08-15 04:00:00   10.48
+#>  8 2017-08-18 04:00:00    1.92
+#>  9 2017-08-19 04:00:00    0.95
+#> 10 2017-08-20 04:00:00    1.87
 ```
 
 ``` r

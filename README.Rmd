@@ -50,7 +50,7 @@ library(extrafont)
 
 Fetch the trending hashtags used in the alt-right community for a specific 
 day. The data is returned as a nested dataframe for each trending tag, 
-including the total number of times mentioned. The nested timeframe includes 
+including the total number of times menti. The nested time frame includes 
 a z-score normalized trend for the number of mentions at 30 minute intervals 
 throughout the requested date range.
 
@@ -64,8 +64,8 @@ Basic plotting of the activity.
 
 ```{r basic_plot, fig.height=12, fig.width= 10}
 dat %>% mutate(title = forcats::as_factor(title)) %>% 
-  tidyr::unnest() %>% mutate(datetime = as.POSIXct(name, tz = "utc")) %>% 
-  ggplot(., aes(x = datetime, y = y)) + geom_col(fill = "orange") + 
+  tidyr::unnest() %>% 
+  ggplot(., aes(x = date, y = z_score)) + geom_col(fill = "orange") + 
   geom_hline(yintercept = 0) +
   #facet_wrap(~title, ncol = 1, strip.position = "left") +
   facet_grid(title ~ .) +
