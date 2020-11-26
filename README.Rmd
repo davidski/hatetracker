@@ -14,9 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![Travis-CI Build Status](https://travis-ci.org/davidski/hatetracker.svg?branch=master)](https://travis-ci.org/davidski/hatetracker)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/davidski/hatetracker?branch=master&svg=true)](https://ci.appveyor.com/project/davidski/hatetracker)
+<!-- badges: start -->
+[![R build status](https://github.com/davidski/hatetracker/workflows/R-CMD-check/badge.svg)](https://github.com/davidski/hatetracker/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/davidski/hatetracker/master.svg)](https://codecov.io/github/davidski/hatetracker?branch=master)
+<!-- badges: end -->
  
 This is an R interface to the SPLC [hatetracker.io](https://hatetracker.io) project.
 
